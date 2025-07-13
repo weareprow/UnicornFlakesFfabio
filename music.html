@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flake That - Watch Now</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    :root {
+      --color-primary: #7b2ff7;
+      --color-accent: #ff33cc;
+      --color-bg-light: #f9e6fc;
+      --color-bg-alt-light: #ffe6fa;
+      --color-text-light: #3a0ca3;
+
+      --color-bg-dark: #1a0e3a;
+      --color-bg-alt-dark: #2d164e;
+      --color-text-dark: #dcb6f2;
+      --color-accent-dark: #ff99ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--color-bg-light), var(--color-bg-alt-light));
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      color: var(--color-text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: background 0.5s ease, color 0.5s ease;
+      overflow-x: hidden;
+      cursor: url('fabioprow.png') 16 16, crosshair;
+    }
+
+    /* Hover cursor for UI elements */
+    button:hover,
+    button *:hover,
+    select:hover,
+    select *:hover,
+    a:hover,
+    input:hover,
+    textarea:hover,
+    label:hover,
+    video:hover,
+    .unmute-btn:hover,
+    .controls button:hover,
+    .controls select:hover {
+      cursor: url('fabioprow2.png') 16 16, pointer !important;
+    }
+
+    body.dark {
+      background: linear-gradient(135deg, var(--color-bg-dark), var(--color-bg-alt-dark));
+      color: var(--color-text-dark);
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 30px;
+      color: var(--color-primary);
+      text-shadow: 2px 2px 10px rgba(123, 47, 247, 0.3);
+    }
+
+    .video-container {
+      width: 90%;
+      max-width: 960px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(255, 51, 204, 0.4);
+      background: white;
+      padding: 8px;
+      border: 4px solid var(--color-accent);
+    }
+
+    body.dark .video-container {
+      background: #3a2377;
+      border-color: var(--color-accent-dark);
+      box-shadow: 0 16px 40px rgba(255, 153, 255, 0.4);
+    }
+
+    video {
+      width: 100%;
+      border-radius: 16px;
+      display: block;
+    }
+
+    .controls {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+      flex-wrap: wrap;
+    }
+
+    .controls select,
+    .controls button {
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: var(--color-accent);
+      color: white;
+      box-shadow: 0 4px 12px rgba(247, 99, 174, 0.3);
+    }
+
+    .controls select:hover,
+    .controls button:hover {
+      background: #e600b8;
+      transform: scale(1.05);
+    }
+
+    body.dark .controls select,
+    body.dark .controls button {
+      background: var(--color-accent-dark);
+    }
+
+    .unmute-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--color-primary);
+      color: white;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 4px 10px rgba(123, 47, 247, 0.3);
+    }
+
+    .unmute-btn:hover {
+      background: #5e1ed4;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 1.8rem; }
+      .controls { flex-direction: column; align-items: flex-end; }
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <select onchange="changeSpeed(this.value)">
+      <option value="1">Normal</option>
+      <option value="1.25">1.25x</option>
+      <option value="1.5">1.5x</option>
+      <option value="2">2x</option>
+    </select>
+    <button onclick="toggleTheme()">Toggle Theme</button>
+    <button onclick="togglePlayPause()" id="playPauseBtn">Pause</button>
+    <button onclick="window.location.href='index.html'">Back</button>
+  </div>
+
+  <h1>Watch: Flake That</h1>
+
+  <div class="video-container">
+    <video id="flakeVideo" playsinline>
+      <source src="FlakeThat.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const video = document.getElementById('flakeVideo');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+
+    function launchConfetti() {
+      confetti({
+        particleCount: 100,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+    }
+
+    document.querySelectorAll('button, select').forEach(el => {
+      el.addEventListener('click', launchConfetti);
+    });
+
+    const savedTheme = localStorage.getItem('darkTheme');
+    if (savedTheme === 'true') {
+      document.body.classList.add('dark');
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('darkTheme', document.body.classList.contains('dark'));
+    }
+
+    function changeSpeed(value) {
+      video.playbackRate = parseFloat(value);
+    }
+
+    function togglePlayPause() {
+      if (video.paused) {
+        video.play();
+        playPauseBtn.innerText = 'Pause';
+      } else {
+        video.pause();
+        playPauseBtn.innerText = 'Play';
+      }
+    }
+
+    function tryPlayWithSound() {
+      video.muted = false;
+      const attempt = video.play();
+      if (attempt !== undefined) {
+        attempt.catch(() => fallbackMuted());
+      }
+    }
+
+    function fallbackMuted() {
+      video.muted = true;
+      video.play();
+
+      const unmuteBtn = document.createElement('button');
+      unmuteBtn.innerText = 'Unmute';
+      unmuteBtn.className = 'unmute-btn';
+      document.body.appendChild(unmuteBtn);
+
+      const enableSound = () => {
+        video.muted = false;
+        video.play();
+        unmuteBtn.remove();
+        document.removeEventListener('click', enableSound);
+      };
+
+      unmuteBtn.addEventListener('click', enableSound);
+    }
+
+    // 🎉 Confetti trail with disco + hover mode
+    let confettiCooldown = false;
+    document.addEventListener('mousemove', (e) => {
+      if (confettiCooldown) return;
+
+      const hovered = document.elementFromPoint(e.clientX, e.clientY);
+      const isHoveringUI = hovered?.closest('button, select, a, input, textarea, label, .unmute-btn');
+
+      const discoColors = ['#FF0000', '#FF9900', '#FFFF00', '#33FF00', '#0066FF', '#9900FF'];
+      const hoverColors = ['#FFD700', '#0077FF', '#000000'];
+
+      confetti({
+        particleCount: 5,
+        startVelocity: 10,
+        spread: 25,
+        origin: {
+          x: e.clientX / window.innerWidth,
+          y: e.clientY / window.innerHeight
+        },
+        colors: isHoveringUI ? hoverColors : discoColors
+      });
+
+      confettiCooldown = true;
+      setTimeout(() => confettiCooldown = false, 40);
+    });
+
+    window.onload = () => {
+      tryPlayWithSound();
+      launchConfetti();
+    };
+  </script>
+</body>
+</html>

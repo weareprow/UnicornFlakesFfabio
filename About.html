@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About - Unicorn Skins</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --color-primary: #7b2ff7;
+      --color-secondary: #f107a3;
+      --color-accent: #ff33cc;
+      --color-bg-light: #f9e6fc;
+      --color-bg-alt-light: #ffe6fa;
+      --color-text-light: #3a0ca3;
+
+      --color-bg-dark: #1a0e3a;
+      --color-bg-alt-dark: #2d164e;
+      --color-text-dark: #ffe6fd;
+      --color-accent-dark: #ff99ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Rubik', sans-serif;
+      background: linear-gradient(135deg, var(--color-bg-light), var(--color-bg-alt-light));
+      color: var(--color-text-light);
+      transition: background 0.4s ease, color 0.4s ease;
+      overflow: hidden;
+    }
+
+    body.dark {
+      background: linear-gradient(135deg, var(--color-bg-dark), var(--color-bg-alt-dark));
+      color: var(--color-text-dark);
+    }
+
+    .top-controls {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .theme-toggle,
+    .back-btn {
+      background: var(--color-accent);
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(247, 99, 174, 0.4);
+      font-size: 0.95rem;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .theme-toggle:hover,
+    .back-btn:hover {
+      transform: scale(1.05);
+      background: #e600b8;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      padding: 40px;
+    }
+
+    .slide {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      position: absolute;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+      width: 100%;
+      max-width: 1400px;
+      padding: 20px;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .skin-img {
+      height: 80vh;
+      max-width: 45vw;
+      object-fit: contain;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(255, 51, 204, 0.2);
+      animation: fadeInSlide 1.2s ease forwards;
+    }
+
+    .info-box {
+      background: var(--color-bg-alt-light);
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(247, 99, 174, 0.2);
+      min-width: 360px;
+      position: relative;
+      animation: fadeInBox 1.2s ease forwards;
+    }
+
+    .skin-title {
+      position: absolute;
+      top: -35px;
+      left: 20px;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--color-accent);
+      animation: fadeInTitle 1.2s ease forwards;
+    }
+
+    .info-box p {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #c018a7;
+      line-height: 1.6;
+    }
+
+    body.dark .info-box {
+      background: var(--color-bg-alt-dark);
+      color: var(--color-text-dark);
+    }
+
+    body.dark .info-box p {
+      color: var(--color-accent-dark);
+    }
+
+    body.dark .skin-title {
+      color: var(--color-accent-dark);
+    }
+
+    @keyframes fadeInBox {
+      0% { opacity: 0; transform: translateX(50px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeInTitle {
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInSlide {
+      0% { opacity: 0; transform: translateX(-50px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .slide {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .skin-img {
+        height: 50vh;
+        max-width: 80vw;
+      }
+
+      .info-box {
+        margin-top: 20px;
+        width: 90%;
+      }
+
+      .skin-title {
+        position: static;
+        margin-bottom: 10px;
+        display: block;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-controls">
+    <button class="theme-toggle">Toggle Theme</button>
+    <a class="back-btn" href="file:///C:/Users/gijse/Downloads/ding/index.html">← Back</a>
+  </div>
+
+  <div class="container" id="carousel">
+    <div class="slide active">
+      <img src="fabio.png" alt="Fabio Sparklemane" class="skin-img" />
+      <div class="info-box">
+        <div class="skin-title">Fabio Sparklemane</div>
+        <p>He is the original unicorn of cereal magic. Fabio Sparklemane rides rainbows and spreads joy with Unicorn Flakes. His style is soft, sparkly, and slightly over the top — just like him.</p>
+      </div>
+    </div>
+    <div class="slide">
+      <img src="fabio2.png" alt="Fabio Galaxy" class="skin-img" />
+      <div class="info-box">
+        <div class="skin-title">Fabio Galaxy</div>
+        <p>Galactic Fabio is from space. With stars in his mane and nebula trails behind him, he’s a universal symbol of fabulous. He was born in a cosmic cereal explosion. Literally.</p>
+      </div>
+    </div>
+    <div class="slide">
+      <img src="fabio3.png" alt="Fabio Spicy" class="skin-img" />
+      <div class="info-box">
+        <div class="skin-title">Fabio Spicy</div>
+        <p>🔥 WARNING: Too Hot! Spicy Fabio brings the fire — a red unicorn with attitude and flaming flakes. He doesn’t trot, he storms. Don’t get on his spicy side!</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Auto cycle
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+    function showSlide(index) {
+      slides.forEach((s, i) => {
+        s.classList.toggle('active', i === index);
+      });
+    }
+    setInterval(() => {
+      current = (current + 1) % slides.length;
+      showSlide(current);
+    }, 7500);
+
+    // Dark mode toggle
+    const toggleBtn = document.querySelector('.theme-toggle');
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // Load saved theme
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark') document.body.classList.add('dark');
+    });
+  </script>
+</body>
+</html>

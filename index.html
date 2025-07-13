@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🦄 Unicorn Flakes</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    :root {
+      --color-primary: #7b2ff7;
+      --color-secondary: #f107a3;
+      --color-accent: #ff33cc;
+      --color-bg-light: #f9e6fc;
+      --color-bg-alt-light: #ffe6fa;
+      --color-text-light: #3a0ca3;
+
+      --color-bg-dark: #1a0e3a;
+      --color-bg-alt-dark: #2d164e;
+      --color-text-dark: #dcb6f2;
+      --color-accent-dark: #ff99ff;
+    }
+    /* Light theme by default */
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--color-bg-light), var(--color-bg-alt-light));
+      color: var(--color-text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+    .bottom-left-buttons {
+  position: fixed;
+  bottom: 80px;
+  left: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between buttons */
+  z-index: 1000;
+}
+
+    .bottom-left {
+  position: fixed;
+  bottom: 40px;
+  left: 40px;
+  z-index: 1000;
+}
+.add-btn.bottom-left {
+  border-radius: 5px; /* minder bochtig dan standaard 30px */
+}
+.add-btn.bottom-left {
+  border-radius: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+    body.dark {
+      background: linear-gradient(135deg, var(--color-bg-dark), var(--color-bg-alt-dark));
+      color: var(--color-text-dark);
+    }
+
+    /* Basic reset */
+    * {
+      box-sizing: border-box;
+    }
+
+    header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 40px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  box-shadow: 0 4px 12px rgba(247, 99, 174, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  animation: slideDownFadeIn 0.8s ease forwards;
+  user-select: none;
+}
+
+    header.dark {
+      background: linear-gradient(90deg, #3a2377, #6a145a);
+      box-shadow: 0 4px 12px rgba(255, 153, 255, 0.4);
+    }
+    header h1 {
+      margin: 0;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: #fff;
+      letter-spacing: 0.04em;
+    }
+   .search-bar {
+  justify-self: center;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+}
+
+    .search-bar input {
+      width: 100%;
+      padding: 8px 12px 8px 35px;
+      border-radius: 30px;
+      border: none;
+      font-size: 0.9rem;
+      outline: none;
+      box-shadow: 0 0 8px rgba(247, 99, 174, 0.3);
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+      color: var(--color-text-light);
+      background: white;
+    }
+    body.dark .search-bar input {
+      color: var(--color-text-dark);
+      background: #3a2377;
+      box-shadow: 0 0 8px rgba(255, 153, 255, 0.3);
+    }
+    .search-bar input::placeholder {
+      color: #c084f5;
+      font-style: italic;
+    }
+    .search-bar input:focus {
+      box-shadow: 0 0 15px var(--color-accent);
+      transform: scale(1.05);
+    }
+    .search-bar svg {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      fill: var(--color-accent);
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+    }
+    body.dark .search-bar svg {
+      fill: var(--color-accent-dark);
+    }
+
+    .Cart-btn, .theme-toggle-btn {
+      background: #fff;
+      color: var(--color-primary);
+      font-weight: 600;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      padding: 10px 22px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(247, 99, 174, 0.4);
+      transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+      user-select: none;
+      margin-left: 12px;
+    }
+    .Cart-btn:hover, .theme-toggle-btn:hover {
+      background: var(--color-accent);
+      color: white;
+      box-shadow: 0 6px 20px rgba(255, 51, 204, 0.7);
+      transform: scale(1.05);
+    }
+    body.dark .Cart-btn, body.dark .theme-toggle-btn {
+      background: #3a2377;
+      color: var(--color-accent-dark);
+      box-shadow: 0 4px 12px rgba(255, 153, 255, 0.4);
+    }
+    body.dark .Cart-btn:hover, body.dark .theme-toggle-btn:hover {
+      background: var(--color-accent-dark);
+      color: white;
+      box-shadow: 0 6px 20px rgba(255, 153, 255, 0.7);
+    }
+
+    .Cart-count {
+      background: var(--color-accent);
+      color: white;
+      font-weight: 700;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      line-height: 1;
+      min-width: 22px;
+      text-align: center;
+      box-shadow: 0 0 6px var(--color-accent);
+      transition: transform 0.3s ease;
+      user-select: none;
+    }
+    .Cart-count.bump {
+      animation: bump 0.4s ease forwards;
+    }
+    body.dark .Cart-count {
+      background: var(--color-accent-dark);
+      box-shadow: 0 0 6px var(--color-accent-dark);
+    }
+
+    header .controls {
+      display: flex;
+      align-items: center;
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 40px 60px;
+      max-width: 1300px;
+      margin: 0 auto;
+      width: 100%;
+      user-select: none;
+    }
+    body.dark main {
+      color: var(--color-text-dark);
+    }
+
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(135deg, var(--color-bg-alt-light), var(--color-bg-light));
+      border-radius: 20px;
+      margin-bottom: 40px;
+      animation: fadeSlideUp 0.6s ease forwards;
+    }
+    body.dark .hero {
+      background: linear-gradient(135deg, var(--color-bg-alt-dark), var(--color-bg-dark));
+    }
+    .hero h2 {
+      font-size: 2.2rem;
+      color: var(--color-primary);
+      margin-bottom: 12px;
+    }
+    body.dark .hero h2 {
+      color: var(--color-accent-dark);
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: #6b46c1;
+      font-style: italic;
+      margin: 0;
+    }
+    body.dark .hero p {
+      color: #b399ff;
+    }
+
+    .products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+
+
+    .product-Cart {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(247, 99, 174, 0.15);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      padding: 0;
+      overflow: hidden;
+    }
+    body.dark .product-Cart {
+      background: #3a2377;
+      box-shadow: 0 10px 30px rgba(255, 153, 255, 0.3);
+    }
+    .product-Cart:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 20px 50px rgba(255, 51, 204, 0.3);
+    }
+    body.dark .product-Cart:hover {
+      box-shadow: 0 20px 50px rgba(255, 153, 255, 0.5);
+    }
+    .product-image {
+      width: 100%;
+      height: 180px;
+      object-fit: contain;
+      background: linear-gradient(135deg, var(--color-bg-light) 30%, var(--color-bg-alt-light) 100%);
+      padding: 25px;
+      border-bottom: 1px solid #f0c1f7;
+      pointer-events: none;
+    }
+    body.dark .product-image {
+      background: linear-gradient(135deg, var(--color-bg-dark) 30%, var(--color-bg-alt-dark) 100%);
+      border-color: #6a145a;
+    }
+    .product-info {
+      padding: 20px 25px 30px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .product-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--color-primary);
+      margin: 0 0 8px;
+      letter-spacing: 0.03em;
+      pointer-events: none;
+    }
+    body.dark .product-title {
+      color: var(--color-accent-dark);
+    }
+    .product-desc {
+      flex-grow: 1;
+      color: #6b46c1;
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+      line-height: 1.3;
+      font-style: italic;
+      pointer-events: none;
+    }
+    body.dark .product-desc {
+      color: #b399ff;
+    }
+    .product-price {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--color-accent);
+      margin-bottom: 18px;
+      letter-spacing: 0.03em;
+      pointer-events: none;
+    }
+    body.dark .product-price {
+      color: var(--color-accent-dark);
+    }
+    .add-btn {
+      background: var(--color-accent);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-weight: 600;
+      padding: 12px 0;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      user-select: none;
+    }
+    .add-btn:hover {
+      background: #e600b8;
+      box-shadow: 0 4px 15px rgba(230, 0, 184, 0.6);
+      transform: scale(1.05) rotate(-1deg);
+      animation: wiggle 0.3s ease;
+    }
+
+    /* Cart Drawer */
+    .Cart-drawer {
+      position: fixed;
+      top: 0;
+      right: -480px;
+      width: 460px;
+      max-width: 100vw;
+      height: 100vh;
+      background: white;
+      box-shadow: -4px 0 40px rgba(247, 99, 174, 0.25);
+      transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      padding: 30px 25px;
+      font-size: 1rem;
+      animation-duration: 0.4s;
+      animation-fill-mode: forwards;
+      user-select: none;
+      overflow-y: auto;
+    }
+    body.dark .Cart-drawer {
+      background: #3a2377;
+      color: var(--color-text-dark);
+      box-shadow: -4px 0 40px rgba(255, 153, 255, 0.25);
+    }
+    .Cart-drawer.open {
+      right: 0;
+      animation-name: slideInRight;
+    }
+    .Cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+    .Cart-header h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      letter-spacing: 0.04em;
+    }
+    body.dark .Cart-header h2 {
+      color: var(--color-accent-dark);
+    }
+    .close-Cart-btn {
+      background: transparent;
+      border: none;
+      font-size: 2rem;
+      color: var(--color-accent);
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+    body.dark .close-Cart-btn {
+      color: var(--color-accent-dark);
+    }
+    .close-Cart-btn:hover {
+      color: #cc007a;
+    }
+    .Cart-items {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding-right: 8px;
+      margin-bottom: 15px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-accent) transparent;
+    }
+    body.dark .Cart-items {
+      scrollbar-color: var(--color-accent-dark) transparent;
+    }
+    .Cart-items::-webkit-scrollbar {
+      width: 8px;
+    }
+    .Cart-items::-webkit-scrollbar-thumb {
+      background: var(--color-accent);
+      border-radius: 4px;
+    }
+    body.dark .Cart-items::-webkit-scrollbar-thumb {
+      background: var(--color-accent-dark);
+    }
+    .Cart-items::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .Cart-item {
+      display: flex;
+      flex-direction: column;
+      padding: 15px 0;
+      border-bottom: 1px solid #f0c1f7;
+      position: relative;
+      animation: fadeSlideUp 0.3s ease forwards;
+    }
+    body.dark .Cart-item {
+      border-color: #6a145a;
+    }
+    .Cart-item:last-child {
+      border-bottom: none;
+    }
+    .Cart-item-name {
+      font-weight: 600;
+      color: var(--color-primary);
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+    }
+    body.dark .Cart-item-name {
+      color: var(--color-accent-dark);
+    }
+    .Cart-item-price {
+      font-weight: 600;
+      color: var(--color-accent);
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+    body.dark .Cart-item-price {
+      color: var(--color-accent-dark);
+    }
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .qty-controls button {
+      background: var(--color-primary);
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 6px 14px;
+      font-size: 1.1rem;
+      border-radius: 50%;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s ease, transform 0.2s ease;
+      line-height: 1;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .qty-controls button:hover {
+      background: var(--color-accent);
+      box-shadow: 0 0 10px var(--color-accent);
+      transform: scale(1.1);
+    }
+    body.dark .qty-controls button {
+      background: var(--color-accent-dark);
+    }
+    body.dark .qty-controls button:hover {
+      background: #ffccff;
+      box-shadow: 0 0 10px #ffccffaa;
+    }
+    .remove-item-btn {
+      position: absolute;
+      right: 0;
+      top: 15px;
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      color: #ff3399;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+    .remove-item-btn:hover {
+      color: #cc0066;
+      transform: scale(1.2);
+    }
+    body.dark .remove-item-btn {
+      color: #ff99ff;
+    }
+    body.dark .remove-item-btn:hover {
+      color: #cc66cc;
+    }
+    .Cart-footer {
+      border-top: 2px solid #f0c1f7;
+      padding-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    body.dark .Cart-footer {
+      border-color: #6a145a;
+    }
+    .Cart-total {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--color-primary);
+      text-align: right;
+    }
+    body.dark .Cart-total {
+      color: var(--color-accent-dark);
+    }
+    .checkout-btn {
+      background: var(--color-primary);
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      padding: 14px 0;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    .checkout-btn:hover:not(:disabled) {
+      background: var(--color-secondary);
+      box-shadow: 0 6px 20px var(--color-secondary);
+    }
+    .checkout-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Modal */
+    .modal-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1200;
+      user-select: none;
+    }
+    .modal-bg.open {
+      display: flex;
+      animation: fadeIn 0.3s ease forwards;
+    }
+    .modal {
+      background: white;
+      border-radius: 18px;
+      padding: 30px 40px 40px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 0 30px rgba(255, 51, 204, 0.3);
+      user-select: text;
+    }
+    body.dark .modal {
+      background: #3a2377;
+      color: var(--color-text-dark);
+      box-shadow: 0 0 30px rgba(255, 153, 255, 0.5);
+    }
+    .modal img {
+      width: 100%;
+      height: 250px;
+      object-fit: contain;
+      margin-bottom: 25px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--color-bg-light), var(--color-bg-alt-light));
+    }
+    body.dark .modal img {
+      background: linear-gradient(135deg, var(--color-bg-dark), var(--color-bg-alt-dark));
+    }
+    .modal h3 {
+      margin-top: 0;
+      font-size: 1.8rem;
+      color: var(--color-primary);
+      margin-bottom: 12px;
+    }
+    body.dark .modal h3 {
+      color: var(--color-accent-dark);
+    }
+    .modal p {
+      font-size: 1rem;
+      line-height: 1.4;
+      margin-bottom: 20px;
+      font-style: italic;
+      color: #6b46c1;
+    }
+    body.dark .modal p {
+      color: #b399ff;
+    }
+    .modal .price {
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--color-accent);
+      margin-bottom: 28px;
+    }
+    body.dark .modal .price {
+      color: var(--color-accent-dark);
+    }
+    .modal .add-btn {
+      background: var(--color-accent);
+      color: white;
+      border-radius: 30px;
+      padding: 14px 0;
+      border: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s ease;
+      user-select: none;
+    }
+    .modal .add-btn:hover {
+      background: #e600b8;
+      box-shadow: 0 4px 20px rgba(230, 0, 184, 0.6);
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 18px;
+      background: transparent;
+      border: none;
+      font-size: 2rem;
+      color: var(--color-accent);
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+    body.dark .modal-close {
+      color: var(--color-accent-dark);
+    }
+    .modal-close:hover {
+      color: #cc007a;
+    }
+
+    /* Form in Cart */
+    form.checkout-form {
+      border-top: 2px solid #f0c1f7;
+      margin-top: 18px;
+      padding-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    body.dark form.checkout-form {
+      border-color: #6a145a;
+    }
+    form.checkout-form label {
+      font-weight: 600;
+      color: var(--color-primary);
+      font-size: 1rem;
+      margin-bottom: 6px;
+      display: block;
+    }
+    body.dark form.checkout-form label {
+      color: var(--color-accent-dark);
+    }
+    form.checkout-form input, form.checkout-form textarea {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #f0c1f7;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      resize: vertical;
+      width: 100%;
+      color: var(--color-text-light);
+      background: white;
+      transition: border-color 0.3s ease;
+    }
+    body.dark form.checkout-form input, body.dark form.checkout-form textarea {
+      background: #3a2377;
+      border-color: #6a145a;
+      color: var(--color-text-dark);
+    }
+    form.checkout-form input:focus, form.checkout-form textarea:focus {
+      border-color: var(--color-accent);
+      outline: none;
+    }
+    body.dark form.checkout-form input:focus, body.dark form.checkout-form textarea:focus {
+      border-color: var(--color-accent-dark);
+    }
+
+    form.checkout-form button[type="submit"] {
+      background: var(--color-primary);
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      padding: 14px 0;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    form.checkout-form button[type="submit"]:hover:not(:disabled) {
+      background: var(--color-secondary);
+      box-shadow: 0 6px 20px var(--color-secondary);
+    }
+    form.checkout-form button[type="submit"]:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Animations */
+    @keyframes slideDownFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes bump {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.3);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    @keyframes wiggle {
+      0%, 100% {
+        transform: rotate(0deg);
+      }
+      25% {
+        transform: rotate(3deg);
+      }
+      75% {
+        transform: rotate(-3deg);
+      }
+    }
+    @keyframes fadeIn {
+      0% {opacity: 0;}
+      100% {opacity: 1;}
+    }
+    @keyframes slideInRight {
+      0% { right: -480px; }
+      100% { right: 0; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        padding: 14px 20px;
+      }
+      .search-bar {
+        flex: 1;
+        margin: 0 12px;
+      }
+      main {
+        padding: 30px 20px;
+      }
+      .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+      }
+      .Cart-drawer {
+        width: 100vw;
+        right: -100vw;
+        padding: 20px 15px;
+      }
+      .Cart-drawer.open {
+        right: 0;
+      }
+      .Cart-btn, .theme-toggle-btn {
+        padding: 10px 14px;
+        font-size: 1.1rem;
+      }
+      .Cart-btn span {
+        display: none;
+      }
+      .theme-toggle-btn {
+        font-size: 1.1rem;
+      }
+      form.checkout-form label, form.checkout-form input, form.checkout-form textarea {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<header>
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+</head>
+<body>
+  <h1 
+    onclick="location.reload()" 
+    style="cursor: pointer; font-family: 'Luckiest Guy', cursive; font-size: 60px; color: transparent; -webkit-text-stroke: 3px #3a2377;"
+  >
+    Unicorn Flakes
+  </h1>
+  <audio id="backgroundMusic" autoplay loop>
+  <source src="UnicornFlakes.m4a" type="audio/mp4">
+  Your browser does not support the audio element.
+</audio>
+</body>
+
+
+  <div class="search-bar" role="search">
+    <svg viewBox="0 0 24 24">
+      <path d="M21 21l-5.197-5.197m2.632-4.632a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"
+        stroke="#ff4fc1" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <input type="search" id="searchInput" placeholder="Search a product..." autocomplete="off" aria-label="Search a product..." />
+  </div>
+
+  <div class="controls">
+    <button class="Cart-btn" onclick="window.location.href='music.html'">Music</button>
+    <button class="Cart-btn" onclick="window.location.href='about.html'">About</button>
+    <button class="Cart-btn" id="themeToggleBtn">Theme</button>
+    <button class="Cart-btn" id="CartButton">
+      🛒 <span>Cart</span>
+      <div class="Cart-count" id="CartCount">0</div>
+    </button>
+  </div>
+</header>
+
+ <head>
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+  <style>
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(to bottom right, #ffd6fa, #ffe6ff);
+    }
+
+    .hero h2 {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 48px;
+      color: #ff69b4;
+      -webkit-text-stroke: 1.5px #ff0080;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 24px;
+      color: #ff69b4;
+      -webkit-text-stroke: 0.5px #ff0080;
+      margin-bottom: 20px;
+    }
+    
+  </style>
+</head>
+<body>
+  <section class="hero" aria-label="Welcome to Unicorn Flakes">
+    <h2>Welcome to Fabio's site!</h2>
+    <p>The number 1 unicorn flakes site!</p>
+  </section>
+</body>
+
+<button id="unmuteBtn" class="Cart-btn bottom-left" style="display:none; position: fixed; bottom: 20px; left: 20px; z-index: 9999;">
+  🔈 Unmute Music
+</button>
+
+    <section class="products-grid" id="productsGrid" aria-label="Productenlijst">
+      <!-- Product Carts komen hier via JS -->
+    </section>
+  </main>
+
+  <!-- Cart Drawer -->
+  <aside class="Cart-drawer" id="CartDrawer" aria-label="Winkelwagen inhoud" aria-hidden="true">
+    <div class="Cart-header">
+      <h2>Your Cart</h2>
+      <button class="close-Cart-btn" id="closeCartBtn" aria-label="Close Cart">&times;</button>
+    </div>
+    <div class="Cart-items" id="CartItems" tabindex="0" aria-live="polite" aria-atomic="true">
+      <p>Your Cart is empty</p>
+    </div>
+    <div class="Cart-footer">
+      <div class="Cart-total" id="CartTotal">Total: €0,00</div>
+      <button class="checkout-btn" id="checkoutBtn" disabled>Order</button>
+    </div>
+
+    <!-- Checkout formulier (verschijnt na op Bestellen klikken) -->
+    <form class="checkout-form" id="checkoutForm" action="https://formspree.io/f/xldlrgjv" method="POST" style="display:none" novalidate>
+      <h3>Order Details</h3>
+      <label for="name">Full name</label>
+      <input type="text" id="name" name="name" placeholder="Example Jan de Vries" required autocomplete="name" />
+      <label for="email">E-mail</label>
+      <input type="email" id="email" name="_replyto" placeholder="Example jan@example.com" required autocomplete="email" />
+      <label for="street">Adress</label>
+      <input type="text" id="street" name="straat" placeholder="example: Hoofdstraat 123" required autocomplete="street-address" />
+      <label for="postcode">Postal-code</label>
+      <input type="text" id="postcode" name="postcode" placeholder="1234 AB" pattern="[1-9][0-9]{3}\s?[A-Za-z]{2}" required autocomplete="postal-code" />
+      <label for="city">Place</label>
+      <input type="text" id="city" name="plaats" placeholder="Bijv. Amsterdam" required autocomplete="address-level2" />
+      <label for="comments">Extra (optioneel)</label>
+      <textarea id="comments" name="comments" rows="3" placeholder="Bijv. graag bezorgd na 17:00"></textarea>
+
+      <input type="hidden" name="orderDetails" id="orderDetails" value="" />
+
+      <button type="submit" id="submitOrderBtn" disabled>Send order</button>
+    </form>
+  </aside>
+
+  <!-- Product Modal -->
+  <div class="modal-bg" id="modalBg" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+    <div class="modal" role="document">
+      <button class="modal-close" id="modalCloseBtn" aria-label="Sluit product detail">&times;</button>
+      <img src="" alt="" id="modalImg" />
+      <h3 id="modalTitle">Product Titel</h3>
+      <p id="modalDesc">Product beschrijving</p>
+      <div class="price" id="modalPrice">€0,00</div>
+      <button class="add-btn" id="modalAddBtn">add to Cart</button>
+    </div>
+  </div>
+
+  <script>
+    // Product data met oude plaatjes en juiste namen/omschrijvingen
+    const products = [
+      {
+        id: 'uf1',
+        title: 'Unicorn Flakes Original',
+        description: 'Delightful, colorful flakes inspired by magical unicorn themes, perfect for adding a whimsical touch to any dish or decoration.',
+        price: 5.99,
+        image: 'https://i.imgur.com/Rwi38NU.png',
+      },
+      {
+        id: 'uf2',
+        title: 'Unicorn Flakes Galaxy',
+        description: 'Sparkling flakes with a cosmic twist, blending vibrant colors and shimmering effects to evoke the mystery and beauty of the galaxy, combined with the magic of unicorns.',
+        price: 6.99,
+        image: 'https://i.imgur.com/VtFiNfa.png',
+      },
+      {
+        id: 'uf3',
+        title: 'Unicorn Flakes Spicy',
+        description: 'A bold and playful mix of colorful unicorn-themed flakes with a spicy kick, adding a surprising twist to your culinary or decorative creations.',
+        price: 7.99,
+        image: 'https://i.imgur.com/9OfKCQr.png',
+      },
+      {
+        id: 'uf4',
+        title: 'Spoon',
+        description: 'A classic, elegant spoon designed for everyday use, combining functionality with a simple aesthetic.',
+        price: 3.50,
+        image: 'https://i.imgur.com/4oazRra.png',
+      },
+      {
+        id: 'uf5',
+        title: 'Galaxy Spoon',
+        description: 'A unique spoon featuring a galaxy-inspired design with swirling cosmic colors and shimmering details, making every meal feel out of this world.',
+        price: 4.50,
+        image: 'https://i.imgur.com/fFKbjDI.png',
+      },
+      {
+        id: 'uf6',
+        title: 'Spicy Spoon',
+        description: 'A vibrant spoon with a spicy-themed design, perfect for adding a bit of flair and excitement to your dining experience.',
+        price: 5.50,
+        image: 'https://i.imgur.com/yDv5k4K.png',
+      },
+      {
+        id: 'uf7',
+        title: 'Normal Parachute',
+        description: 'A reliable and sturdy parachute designed for smooth and safe descents, crafted with quality materials for optimal performance.',
+        price: 49.99,
+        image: 'https://i.imgur.com/w1rjT0i.png',
+      },
+      {
+        id: 'uf8',
+        title: 'Galaxy Parachute',
+        description: 'A visually stunning parachute decorated with a galaxy pattern, merging safety with an eye-catching cosmic design.',
+        price: 54.99,
+        image: 'https://i.imgur.com/BxgGeYJ.png',
+      },
+      {
+        id: 'uf9',
+        title: 'Spicy Parachute',
+        description: 'A bold parachute design featuring vibrant, spicy-inspired colors and patterns, making your descent as lively as your style.',
+        price: 59.99,
+        image: 'https://i.imgur.com/wPXVmhZ.png',
+      },
+      
+    ];
+
+window.addEventListener('DOMContentLoaded', () => {
+  const audio = document.getElementById('backgroundMusic');
+  const unmuteBtn = document.getElementById('unmuteBtn');
+
+  // 🔉 Set volume to 30% (0.3 out of 1)
+  audio.volume = 0.3;
+
+  const playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise
+      .then(() => {
+        unmuteBtn.style.display = 'block';
+      })
+      .catch(() => {
+        unmuteBtn.style.display = 'block';
+      });
+  }
+
+  unmuteBtn.addEventListener('click', () => {
+    audio.muted = false;
+    audio.play();
+    unmuteBtn.style.display = 'none';
+  });
+});
+
+
+
+    // Helpers
+    function formatPrice(num) {
+      return '€' + num.toFixed(2).replace('.', ',');
+    }
+
+    // State
+    let Cart = {};
+
+    // Elements
+    const productsGrid = document.getElementById('productsGrid');
+    const CartButton = document.getElementById('CartButton');
+    const CartDrawer = document.getElementById('CartDrawer');
+    const closeCartBtn = document.getElementById('closeCartBtn');
+    const CartItemsContainer = document.getElementById('CartItems');
+    const CartCountElem = document.getElementById('CartCount');
+    const CartTotalElem = document.getElementById('CartTotal');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const modalBg = document.getElementById('modalBg');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalImg = document.getElementById('modalImg');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalAddBtn = document.getElementById('modalAddBtn');
+    const searchInput = document.getElementById('searchInput');
+
+    // Checkout form elements
+    const checkoutForm = document.getElementById('checkoutForm');
+    const submitOrderBtn = document.getElementById('submitOrderBtn');
+    const orderDetailsInput = document.getElementById('orderDetails');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+    let currentModalProduct = null;
+
+    // Render products functie
+    function renderProducts(filter = '') {
+      productsGrid.innerHTML = '';
+      const filtered = products.filter(p => p.title.toLowerCase().includes(filter.toLowerCase()) || p.description.toLowerCase().includes(filter.toLowerCase()));
+      if (filtered.length === 0) {
+        productsGrid.innerHTML = '<p>No Product Found.</p>';
+        return;
+      }
+      filtered.forEach(product => {
+        const Cart = document.createElement('article');
+        Cart.className = 'product-Cart';
+        Cart.setAttribute('tabindex', '0');
+        Cart.setAttribute('role', 'button');
+        Cart.setAttribute('aria-pressed', 'false');
+        Cart.innerHTML = `
+          <img class="product-image" src="${product.image}" alt="${product.title}" />
+          <div class="product-info">
+            <h3 class="product-title">${product.title}</h3>
+            <p class="product-desc">${product.description}</p>
+            <div class="product-price">${formatPrice(product.price)}</div>
+            <button class="add-btn" aria-label="Voeg ${product.title} toe aan winkelwagen">Add to cart</button>
+          </div>
+        `;
+        // Open modal bij click, behalve op knop
+        Cart.addEventListener('click', e => {
+          if (e.target.tagName.toLowerCase() === 'button') return;
+          openModal(product.id);
+        });
+        // Keyboard enter/space opent ook modal
+        Cart.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openModal(product.id);
+          }
+        });
+        const addBtn = Cart.querySelector('button.add-btn');
+        addBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          addToCart(product.id);
+        });
+        productsGrid.appendChild(Cart);
+      });
+    }
+
+    // Open modal met product details
+    function openModal(id) {
+      const product = products.find(p => p.id === id);
+      if (!product) return;
+      currentModalProduct = product;
+      modalImg.src = product.image;
+      modalImg.alt = product.title;
+      modalTitle.textContent = product.title;
+      modalDesc.textContent = product.description;
+      modalPrice.textContent = formatPrice(product.price);
+      modalAddBtn.textContent = `Add to cart`;
+      modalBg.classList.add('open');
+      modalAddBtn.focus();
+      // ARIA
+      modalBg.setAttribute('aria-hidden', 'false');
+    }
+    function closeModal() {
+      modalBg.classList.remove('open');
+      currentModalProduct = null;
+      modalBg.setAttribute('aria-hidden', 'true');
+      CartButton.focus();
+    }
+
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalBg.addEventListener('click', e => {
+      if (e.target === modalBg) closeModal();
+    });
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modalBg.classList.contains('open')) {
+        closeModal();
+      }
+    });
+
+    // Voeg toe aan winkelwagen
+    function addToCart(productId) {
+      if (!Cart[productId]) {
+        Cart[productId] = 1;
+      } else {
+        Cart[productId]++;
+      }
+      updateCart();
+      animateCartCount();
+    }
+
+    // Update winkelwagen weergave
+    function updateCart() {
+      const keys = Object.keys(Cart);
+      CartCountElem.textContent = keys.reduce((sum, id) => sum + Cart[id], 0);
+      if (CartCountElem.textContent === '0') {
+        CartCountElem.style.display = 'none';
+      } else {
+        CartCountElem.style.display = 'inline-block';
+      }
+      if (keys.length === 0) {
+        CartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+        checkoutBtn.disabled = true;
+      } else {
+        checkoutBtn.disabled = false;
+        CartItemsContainer.innerHTML = '';
+        let total = 0;
+        keys.forEach(id => {
+          const product = products.find(p => p.id === id);
+          if (!product) return;
+          const qty = Cart[id];
+          total += product.price * qty;
+          const itemElem = document.createElement('div');
+          itemElem.className = 'Cart-item';
+          itemElem.innerHTML = `
+            <div class="Cart-item-name">${product.title}</div>
+            <div class="Cart-item-price">${formatPrice(product.price)} x ${qty} = ${formatPrice(product.price * qty)}</div>
+            <div class="qty-controls" aria-label="Aantal aanpassen voor ${product.title}">
+              <button aria-label="Aantal verlagen" class="qty-decrease" data-id="${id}">-</button>
+              <span aria-live="polite" aria-atomic="true" id="qty-${id}">${qty}</span>
+              <button aria-label="Aantal verhogen" class="qty-increase" data-id="${id}">+</button>
+            </div>
+            <button class="remove-item-btn" aria-label="Verwijder ${product.title} uit winkelwagen" data-id="${id}">&times;</button>
+          `;
+          CartItemsContainer.appendChild(itemElem);
+        });
+        CartTotalElem.textContent = `Totaal: ${formatPrice(total)}`;
+      }
+      updateSubmitButtonState();
+    }
+
+    // Animatie voor Cart count
+    function animateCartCount() {
+      CartCountElem.classList.add('bump');
+      setTimeout(() => CartCountElem.classList.remove('bump'), 400);
+    }
+
+    // Cart open/close
+    CartButton.addEventListener('click', () => {
+      CartDrawer.classList.add('open');
+      CartDrawer.setAttribute('aria-hidden', 'false');
+      closeCartBtn.focus();
+    });
+    closeCartBtn.addEventListener('click', () => {
+      CartDrawer.classList.remove('open');
+      CartDrawer.setAttribute('aria-hidden', 'true');
+      CartButton.focus();
+      // Verberg checkout formulier en reset
+      checkoutForm.style.display = 'none';
+      checkoutBtn.style.display = 'block';
+      checkoutBtn.disabled = Object.keys(Cart).length === 0;
+      checkoutForm.reset();
+    });
+
+    // Qty knoppen in winkelwagen
+    CartItemsContainer.addEventListener('click', e => {
+      const target = e.target;
+      if (target.classList.contains('qty-increase')) {
+        const id = target.dataset.id;
+        Cart[id]++;
+        updateCart();
+      } else if (target.classList.contains('qty-decrease')) {
+        const id = target.dataset.id;
+        if (Cart[id] > 1) {
+          Cart[id]--;
+        } else {
+          delete Cart[id];
+        }
+        updateCart();
+      } else if (target.classList.contains('remove-item-btn')) {
+        const id = target.dataset.id;
+        delete Cart[id];
+        updateCart();
+      }
+    });
+
+    // Modal add button
+    modalAddBtn.addEventListener('click', () => {
+      if (!currentModalProduct) return;
+      addToCart(currentModalProduct.id);
+      closeModal();
+      // Open Cart drawer automatically after adding?
+      // CartDrawer.classList.add('open');
+    });
+
+    // Checkout knop in winkelwagen opent formulier
+    checkoutBtn.addEventListener('click', () => {
+      checkoutBtn.style.display = 'none';
+      checkoutForm.style.display = 'flex';
+      // Vul order details in verborgen input
+      orderDetailsInput.value = generateOrderDetails();
+      submitOrderBtn.disabled = false;
+      // Focus eerste veld
+      checkoutForm.name.focus();
+    });
+
+    // Genereer string met bestelling info
+    function generateOrderDetails() {
+      const lines = [];
+      for (const id in Cart) {
+        const product = products.find(p => p.id === id);
+        if (!product) continue;
+        lines.push(`${product.title} - Aantal: ${Cart[id]} - Totaal: ${formatPrice(product.price * Cart[id])}`);
+      }
+      return lines.join('\n');
+    }
+
+    // Formulier validatie voor verzendknop
+    function updateSubmitButtonState() {
+      const keys = Object.keys(Cart);
+      submitOrderBtn.disabled = keys.length === 0;
+    }
+
+    // Simpele postcode validatie pattern + required via HTML pattern attribute
+
+    // Form submission
+    checkoutForm.addEventListener('submit', e => {
+      // Extra validatie kan hier als je wil
+      // Na succesvolle verzending wordt formulier verborgen en winkelwagen geleegd
+      // Formspree stuurt mail naar de ingevulde email
+      // e.preventDefault(); // Niet gebruiken want dan wordt form niet verzonden
+      alert('Thanks for the order.');
+      Cart = {};
+      updateCart();
+      checkoutForm.style.display = 'none';
+      checkoutBtn.style.display = 'block';
+      checkoutForm.reset();
+      CartDrawer.classList.remove('open');
+      CartDrawer.setAttribute('aria-hidden', 'true');
+      CartButton.focus();
+    });
+
+    // Zoekfilter
+    searchInput.addEventListener('input', () => {
+      renderProducts(searchInput.value.trim());
+    });
+
+    // THEME TOGGLE
+    function setTheme(dark) {
+      if (dark) {
+        document.body.classList.add('dark');
+        themeToggleBtn.textContent = 'Light Theme';
+        themeToggleBtn.setAttribute('aria-pressed', 'true');
+      } else {
+        document.body.classList.remove('dark');
+        themeToggleBtn.textContent = 'Dark Theme';
+        themeToggleBtn.setAttribute('aria-pressed', 'false');
+      }
+      localStorage.setItem('darkTheme', dark);
+    }
+    // Init theme from localStorage
+    const savedTheme = localStorage.getItem('darkTheme') === 'true';
+    setTheme(savedTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+      setTheme(!document.body.classList.contains('dark'));
+    });
+
+    // Eerste render
+    renderProducts();
+    updateCart();
+    
+  </script>
+</body>
+</html>
